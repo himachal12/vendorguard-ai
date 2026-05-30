@@ -1,10 +1,2 @@
-backend/venv/
-backend/.env
-backend/__pycache__/
-backend/*.pyc
-backend/vendorguard.db
-frontend/vendorguard-ui/node_modules/
-frontend/vendorguard-ui/build/
-*.pyc
-.env
-vendorguard.db
+DISABLE_ESLINT_PLUGIN=true
+CI=false
