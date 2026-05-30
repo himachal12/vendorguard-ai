@@ -314,7 +314,7 @@ export default function App() {
       const res = await axios.post(
         `${API}/vendors/${vendor.id}/scan`,
         {},
-        { timeout: 120000 }
+        { timeout: 600000 }
       );
       setModalData(res.data);
       setModalVendorId(vendor.id);
