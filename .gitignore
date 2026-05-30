@@ -1,0 +1,7 @@
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/vendorguard.db
+frontend/vendorguard-ui/node_modules/
+frontend/vendorguard-ui/build/
+*.pyc
