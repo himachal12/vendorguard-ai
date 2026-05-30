@@ -1,24 +1,28 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import Response, JSONResponse
 import sqlite3
 import os
+import csv
+import io
 from dotenv import load_dotenv
 from data_collector import collect_vendor_data
 from ai_engine import analyze_vendor_risk, generate_alert_message
-from fastapi.responses import Response
 from pdf_generator import generate_vendor_pdf
 from email_alerts import send_risk_alert
-import csv
-import io
-from fastapi import UploadFile, File
 
-# Load environment variables from .env file
 load_dotenv()
 
-# Initialize FastAPI app
 app = FastAPI(title="VendorGuard AI", version="1.0.0")
-from fastapi import Request
-from fastapi.responses import JSONResponse
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
 
 @app.options("/{rest_of_path:path}")
 async def preflight_handler(request: Request, rest_of_path: str):
@@ -30,18 +34,6 @@ async def preflight_handler(request: Request, rest_of_path: str):
             "Access-Control-Allow-Headers": "*",
         }
     )
-
-# Allow frontend to talk to backend
-from fastapi.middleware.cors import CORSMiddleware
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["*"],
-    expose_headers=["*"],
-)
 
 # ── Database Setup ──────────────────────────────────────────
 def init_db():
