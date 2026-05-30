@@ -56,7 +56,7 @@ async def preflight_handler(request: Request, rest_of_path: str):
 # ── Database Setup ──────────────────────────────────────────
 def init_db():
     """Create database tables if they don't exist"""
-    conn = sqlite3.connect("vendorguard.db")
+    conn = sqlite3.connect("vendorguard.db", timeout=30, check_same_thread=False)
     cursor = conn.cursor()
 
     # Vendors table
@@ -123,7 +123,7 @@ def health_check():
 @app.get("/vendors")
 def get_vendors():
     """Get all vendors"""
-    conn = sqlite3.connect("vendorguard.db")
+    conn = sqlite3.connect("vendorguard.db", timeout=30, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT v.id, v.name, v.website, v.industry, v.created_at,
@@ -155,7 +155,7 @@ def get_vendors():
 @app.post("/vendors")
 def add_vendor(vendor: dict):
     """Add a new vendor"""
-    conn = sqlite3.connect("vendorguard.db")
+    conn = sqlite3.connect("vendorguard.db", timeout=30, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute(
         "INSERT INTO vendors (name, website, industry) VALUES (?, ?, ?)",
@@ -169,7 +169,7 @@ def add_vendor(vendor: dict):
 @app.delete("/vendors/{vendor_id}")
 def delete_vendor(vendor_id: int):
     """Delete a vendor"""
-    conn = sqlite3.connect("vendorguard.db")
+    conn = sqlite3.connect("vendorguard.db", timeout=30, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute("DELETE FROM vendors WHERE id = ?", (vendor_id,))
     cursor.execute("DELETE FROM risk_scores WHERE vendor_id = ?", (vendor_id,))
@@ -181,7 +181,7 @@ def delete_vendor(vendor_id: int):
 @app.get("/vendors/{vendor_id}/history")
 def get_vendor_history(vendor_id: int):
     """Get risk score history for timeline chart"""
-    conn = sqlite3.connect("vendorguard.db")
+    conn = sqlite3.connect("vendorguard.db", timeout=30, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT score, scanned_at, report
@@ -205,7 +205,7 @@ def get_vendor_history(vendor_id: int):
 @app.get("/alerts")
 def get_alerts():
     """Get all unread alerts"""
-    conn = sqlite3.connect("vendorguard.db")
+    conn = sqlite3.connect("vendorguard.db", timeout=30, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute("""
         SELECT a.id, a.message, a.severity, a.created_at, v.name
@@ -236,7 +236,7 @@ def scan_vendor(vendor_id: int):
     Collects data from internet, analyzes with AI,
     saves risk score, creates alert if score jumped.
     """
-    conn = sqlite3.connect("vendorguard.db")
+    conn = sqlite3.connect("vendorguard.db", timeout=30, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute(
         "SELECT id, name, website FROM vendors WHERE id = ?",
@@ -289,7 +289,7 @@ def scan_vendor(vendor_id: int):
     summary = analysis.get("summary", "")
     findings = analysis.get("key_findings", [])
 
-    conn = sqlite3.connect("vendorguard.db")
+    conn = sqlite3.connect("vendorguard.db", timeout=30, check_same_thread=False)
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -350,7 +350,7 @@ def scan_vendor(vendor_id: int):
 @app.get("/vendors/{vendor_id}/pdf")
 def download_vendor_pdf(vendor_id: int):
     """Generate and download PDF risk report for a vendor"""
-    conn = sqlite3.connect("vendorguard.db")
+    conn = sqlite3.connect("vendorguard.db", timeout=30, check_same_thread=False)
     cursor = conn.cursor()
 
     # Get vendor details
@@ -427,7 +427,7 @@ async def import_vendors_csv(file: UploadFile = File(...)):
         decoded = content.decode("utf-8")
         reader = csv.DictReader(io.StringIO(decoded))
 
-        conn = sqlite3.connect("vendorguard.db")
+        conn = sqlite3.connect("vendorguard.db", timeout=30, check_same_thread=False)
         cursor = conn.cursor()
 
         imported = []
