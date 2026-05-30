@@ -2,13 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Upload } from 'lucide-react';
 import axios from 'axios';
 import {
-  LineChart, Line, XAxis, YAxis,
-  CartesianGrid, Tooltip, ResponsiveContainer
+  LineChart, Line, ResponsiveContainer
 } from 'recharts';
 import {
   Shield, Plus, Bell, RefreshCw,
   AlertTriangle, CheckCircle, XCircle,
-  Trash2, X, TrendingUp, Download,
+  Trash2, X, Download,
   ArrowUpDown
 } from 'lucide-react';
 import './App.css';
@@ -366,9 +365,7 @@ export default function App() {
   const yellowCount = vendors.filter(
     v => v.latest_score >= 31 && v.latest_score < 61
   ).length;
-  const greenCount = vendors.filter(
-    v => v.latest_score !== null && v.latest_score < 31
-  ).length;
+  
   const avgScore = vendors.length > 0
     ? Math.round(
         vendors
