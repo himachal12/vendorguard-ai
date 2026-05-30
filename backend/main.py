@@ -10,10 +10,13 @@ from data_collector import collect_vendor_data
 from ai_engine import analyze_vendor_risk, generate_alert_message
 from pdf_generator import generate_vendor_pdf
 from email_alerts import send_risk_alert
+from starlette.middleware.base import BaseHTTPMiddleware
 
 load_dotenv()
 
 app = FastAPI(title="VendorGuard AI", version="1.0.0")
+from starlette.middleware.base import BaseHTTPMiddleware
+
 class CORSAllMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         if request.method == "OPTIONS":
